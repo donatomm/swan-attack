@@ -141,6 +141,7 @@
     color:rgb(var(--foreground));border-left:3px solid rgb(var(--primary));
     padding:4px 0 4px 20px;margin:24px 0;
   }
+  .pull.accent{color:rgb(var(--accent));border-left-color:rgb(var(--accent))}
 
   .why{
     border-left:3px solid rgb(var(--accent));
@@ -200,6 +201,20 @@
   footer{padding:48px 0 80px;border-top:1px solid rgb(var(--border));color:rgb(var(--muted-foreground));font-size:14px}
   a.home{color:rgb(var(--primary));text-decoration:none;font-weight:600}
   a.home:hover{text-decoration:underline}
+
+  /* author aside under a fake example */
+  .aside{font-size:15px;font-style:italic;color:rgb(var(--muted-foreground));
+    margin:-6px 0 10px;padding-left:18px;position:relative}
+  .aside::before{content:"\2014";position:absolute;left:0;color:rgb(var(--accent));font-style:normal}
+
+  /* subscribe CTA */
+  .ctasection{text-align:center;padding:60px 0;border-top:1px solid rgb(var(--border))}
+  .cta-lede{font-size:20px;color:rgb(var(--foreground));margin-bottom:24px}
+  .btn{display:inline-block;background:rgb(var(--accent));color:rgb(var(--accent-foreground));
+    font-family:'Inter',sans-serif;font-weight:700;font-size:17px;letter-spacing:.01em;
+    padding:14px 34px;border-radius:var(--radius);text-decoration:none;transition:.2s}
+  .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .cta-cap{font-size:14px;color:rgb(var(--muted-foreground));margin-top:16px}
 </style>
 </head>
 <body>
@@ -244,6 +259,7 @@
       <h4>Hidden, often undetectable false truths</h4>
       <p>Your research conclusions are well grounded. Sources are scored, and most of the ones used are A++, with plenty of citations. You are scanning the corpus (never skip the human in the loop, ever), and one finding looks very interesting and slightly off. So you go for the exact sources behind it. Very strong ones. You don't concede, and you read the whole papers end to end. The statement does not fit: it uses the two sources' findings, but tilts them to support a baseless take, a fabricated one. That is very hard to detect. Swan Attack catches it, piece of cake.</p>
     </div>
+    <p class="aside">Swan Attack usually catches this one. I have no counterexamples.</p>
 
     <div class="qa accent">
       <h4>A planted citation that is real and clickable</h4>
@@ -251,6 +267,7 @@
       <p>This is the hardest kind to catch: the source exists, and it really does say what it is quoted as saying, so a plain source check passes clean. What flags it is triangulation, the same planted entity surfacing as a suspiciously consistent signal across unrelated queries, plus asking who benefits.</p>
       <span class="src">Source: Cornell Tech, "AI Poisoning via Web Search," <a href="https://arxiv.org/abs/2605.24245v1" target="_blank" rel="noopener">arXiv:2605.24245</a>.</span>
     </div>
+    <p class="aside">I bet Swan Attack also catches this one, but I could not run the audit: no corpus has been made available.</p>
 
     <p class="lede muted">Swan Attack catches invented sources, untestable claims, broken logic, self-contradiction, hidden conflicts of interest, and plans that collapse the moment you play them forward. It gives you a plain verdict on what survived, its own confidence shown out in the open, and the exact weak spots named, so the decision stays yours.</p>
     <p class="lede muted">What it does not give you is certainty. There is no 100% on this planet. The rule underneath everything, from the philosopher Karl Popper, is that you can only ever prove something false, never fully true. So the audit makes no claim to truth. It gives you the strongest standing an idea can have short of measuring it yourself: it survived honest, repeated attempts to knock it down.</p>
@@ -279,7 +296,7 @@
     <p>A thousand days of confirming evidence did nothing to warn the turkey about the one bad day that mattered.</p>
     <p class="pull">The data was never proof. It was just the absence of the counterexample, right up until the counterexample arrived.</p>
     <p>This is the principle the philosopher Karl Popper called falsification. An idea earns trust not by being confirmed, but by surviving honest, <em>severe</em> attempts to prove it wrong. So the audit never tries to confirm a claim. Confirming evidence can pile up forever and still hide a fatal flaw. As the bird witnessed.</p>
-    <p class="pull">The audit does the opposite. It tries to break what you give it, and reports what it could not break.</p>
+    <p class="pull accent">The audit does the opposite. It tries to break what you give it, and reports what it could not break.</p>
     <p>So is validation an empty word? Nope. It gets misused. The word only fits one situation: checking something <strong>against criteria you set in advance</strong>. Success criteria, qualification criteria, a clear <strong>pass or no-pass</strong>. "Did this meet the bar we defined?" is a fair thing to validate, because you control the bar.</p>
     <p><strong>"Is this claim about the world true?" is not.</strong> You can never fully validate that. You can only try to falsify it and report what survived.</p>
   </section>
@@ -412,6 +429,12 @@
       <li>Integration with Excalidraw so it runs inside each text-box container, as scaffolding for hypothesis/falsification knowledge growth in canvas-style models, implemented in my own "Action by Deconstruction" representation of the full B2B product, beyond "The Software."</li>
     </ul>
   </section>
+
+  <div class="ctasection">
+    <p class="cta-lede">For updates, new articles, or more details, find me here.</p>
+    <a class="btn" href="https://substack.com/@donatomm" target="_blank" rel="noopener">Subscribe now</a>
+    <p class="cta-cap">Follow me on Substack — free.</p>
+  </div>
 
   <footer>
     Style: <strong>Steve — Cyan &amp; Orange</strong> (Playfair Display + Inter). &nbsp;·&nbsp; <a class="home" href="./index.html">← Switch style</a>
