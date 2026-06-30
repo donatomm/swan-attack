@@ -66,9 +66,19 @@
   /* hero */
   header.hero{padding:120px 0 56px;text-align:left}
   .eyebrow{
-    display:inline-block;font-size:13px;font-weight:700;letter-spacing:.12em;
-    text-transform:uppercase;color:rgb(var(--accent));margin-bottom:18px;   /* eyebrow = ORANGE */
+    display:block;font-size:13px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:rgb(var(--accent));margin-bottom:10px;   /* eyebrow = ORANGE */
   }
+  /* byline under the eyebrow — thin weight */
+  .byline{
+    display:flex;align-items:center;flex-wrap:wrap;gap:10px;
+    font-weight:300;font-size:15px;color:rgb(var(--muted-foreground));margin-bottom:26px;
+  }
+  .byline a{display:inline-flex;align-items:center;color:rgb(var(--primary));transition:opacity .2s}
+  .byline a:hover{opacity:.7}
+  .byline svg{width:18px;height:18px;fill:currentColor}
+  .byline .ver{position:relative;padding-left:11px}
+  .byline .ver::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:13px;background:rgb(var(--border))}
   h1{
     font-family:'Playfair Display',serif;font-weight:800;line-height:1.05;
     font-size:clamp(48px,9vw,82px);letter-spacing:-.01em;margin-bottom:18px;
@@ -94,6 +104,9 @@
   .qa.accent{border-left-color:rgb(var(--accent))}
   .qa.accent h4{color:rgb(var(--accent))}
   .qa p{font-size:18px;color:rgb(var(--foreground))}
+  .qa .src{display:block;margin-top:14px;font-size:14px;color:rgb(var(--muted-foreground))}
+  .qa .src a{color:rgb(var(--primary));text-decoration:none;font-weight:600}
+  .qa .src a:hover{text-decoration:underline}
 
   /* white brand title under the question box */
   .brandtitle{
@@ -197,6 +210,13 @@
 
   <header class="hero">
     <span class="eyebrow">Swan Attack · Adversarial Auditor</span>
+    <p class="byline">
+      By Donato Marco Mangialardo
+      <a href="https://linkedin.com/in/donatomm" target="_blank" rel="noopener" aria-label="LinkedIn — Donato Marco Mangialardo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <span class="ver">V1.1 · June 30 2026</span>
+    </p>
     <h1>The "Should I trust&hellip;?" era.</h1>
     <p class="subtitle">TL;DR: You should NOT. Unless&hellip;</p>
 
@@ -223,6 +243,13 @@
     <div class="qa">
       <h4>Hidden, often undetectable false truths</h4>
       <p>Your research conclusions are well grounded. Sources are scored, and most of the ones used are A++, with plenty of citations. You are scanning the corpus (never skip the human in the loop, ever), and one finding looks very interesting and slightly off. So you go for the exact sources behind it. Very strong ones. You don't concede, and you read the whole papers end to end. The statement does not fit: it uses the two sources' findings, but tilts them to support a baseless take, a fabricated one. That is very hard to detect. Swan Attack catches it, piece of cake.</p>
+    </div>
+
+    <div class="qa accent">
+      <h4>A planted citation that is real and clickable</h4>
+      <p>Now a harder one. Deep-research agents work as teams of sub-agents that scan and synthesize the web. Because they dig into a topic, they keep landing on the same popular user-generated pages: a Reddit thread, a Wikipedia article. Researchers call this retrieval overlap, and it turns those few pages into a concentrated attack surface. An adversary appends a short, crafted passage to one frequently retrieved page. From then on the agent reads it, cites it, and promotes the attacker's chosen entity across many related queries. The citation is real and clickable, pointing at a genuine site, so the manipulation looks entirely legitimate.</p>
+      <p>This is the hardest kind to catch: the source exists, and it really does say what it is quoted as saying, so a plain source check passes clean. What flags it is triangulation, the same planted entity surfacing as a suspiciously consistent signal across unrelated queries, plus asking who benefits.</p>
+      <span class="src">Source: Cornell Tech, "AI Poisoning via Web Search," <a href="https://arxiv.org/abs/2605.24245v1" target="_blank" rel="noopener">arXiv:2605.24245</a>.</span>
     </div>
 
     <p class="lede muted">Swan Attack catches invented sources, untestable claims, broken logic, self-contradiction, hidden conflicts of interest, and plans that collapse the moment you play them forward. It gives you a plain verdict on what survived, its own confidence shown out in the open, and the exact weak spots named, so the decision stays yours.</p>
