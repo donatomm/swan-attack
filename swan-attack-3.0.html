@@ -6,7 +6,7 @@
 <title>Swan Attack — The "Should I trust…?" era</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ===== Steve — Cyan & Orange : design tokens (RGB channels). Dark-default; #50D0FF primary. ===== */
   /* Spec: cyan headings · orange eyebrows + live-tag instances · white bold. */
@@ -16,12 +16,12 @@
     --accent:255 103 42;        /* #ff672a */
     --accent-foreground:26 14 8;/* near-black on orange */
     --secondary:238 246 249;    /* cyan-tinted off-white */
-    --background:255 255 255;
+    --background:243 244 246;   /* toned-down off-white (was fleshy pure white) */
     --foreground:10 10 10;
-    --card:255 255 255;
-    --muted:245 245 245;
+    --card:255 255 255;         /* white cards pop against the off-white page */
+    --muted:237 238 241;
     --muted-foreground:99 99 99;
-    --border:228 228 235;
+    --border:210 213 220;       /* darker so card borders are actually visible */
     --ring:14 116 144;
     --radius:0.625rem;
   }
@@ -65,16 +65,22 @@
 
   /* hero */
   header.hero{padding:120px 0 56px;text-align:left}
+  /* eyebrow = tag-style chip: orange border + orange text + subtle orange wash */
   .eyebrow{
-    display:block;font-size:13px;font-weight:700;letter-spacing:.12em;
-    text-transform:uppercase;color:rgb(var(--accent));margin-bottom:10px;   /* eyebrow = ORANGE */
+    display:inline-flex;align-items:center;gap:10px;white-space:nowrap;
+    background:rgb(var(--accent)/.12);border:1px solid rgb(var(--accent));
+    border-radius:10px;padding:7px 14px;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;line-height:1;
+    letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--accent));
+    margin-bottom:22px;
   }
+  .eyebrow::before{content:"";width:9px;height:9px;flex:0 0 auto;border-radius:2px;background:rgb(var(--accent))}
   /* byline under the eyebrow — thin weight */
   .byline{
     display:flex;align-items:center;flex-wrap:wrap;gap:10px;
-    font-weight:300;font-size:15px;color:rgb(var(--muted-foreground));margin-bottom:26px;
+    font-weight:300;font-size:15px;color:rgb(var(--foreground));margin-bottom:26px;   /* byline text = WHITE */
   }
-  .byline a{display:inline-flex;align-items:center;color:rgb(var(--primary));transition:opacity .2s}
+  .byline a{display:inline-flex;align-items:center;color:#0A66C2;transition:opacity .2s}  /* LinkedIn icon = LI blue */
   .byline a:hover{opacity:.7}
   .byline svg{width:18px;height:18px;fill:currentColor}
   .byline .ver{position:relative;padding-left:11px}
@@ -116,6 +122,8 @@
   }
   .brandtitle span{display:block;font-family:'Inter',sans-serif;font-weight:600;
     font-size:.42em;letter-spacing:.04em;color:rgb(var(--foreground));margin-top:10px}
+  .brandtitle span.note{font-weight:400;font-size:.28em;letter-spacing:.02em;
+    color:rgb(var(--muted-foreground));margin-top:6px;font-style:italic}
   .lede{font-size:20px;color:rgb(var(--foreground))}
   .lede + .lede{margin-top:20px}
   .lede.muted{color:rgb(var(--muted-foreground));font-size:18px}
@@ -199,6 +207,10 @@
   ul.roadmap li::before{content:"◆";position:absolute;left:0;color:rgb(var(--primary));font-size:.8em;top:.2em}
 
   footer{padding:48px 0 80px;border-top:1px solid rgb(var(--border));color:rgb(var(--muted-foreground));font-size:14px}
+  footer .social{margin-bottom:12px}
+  footer .social a{color:rgb(var(--primary));text-decoration:none;font-weight:600}
+  footer .social a:hover{text-decoration:underline}
+  footer .copyright{font-size:13px;opacity:.85}
   a.home{color:rgb(var(--primary));text-decoration:none;font-weight:600}
   a.home:hover{text-decoration:underline}
 
@@ -224,27 +236,27 @@
 <div class="wrap">
 
   <header class="hero">
-    <span class="eyebrow">Swan Attack · Adversarial Auditor</span>
+    <span class="eyebrow">&ldquo;Should I Trust&hellip;?&rdquo; &middot; The Series &middot; Episode #02</span>
     <p class="byline">
       By Donato Marco Mangialardo
       <a href="https://linkedin.com/in/donatomm" target="_blank" rel="noopener" aria-label="LinkedIn — Donato Marco Mangialardo">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
       </a>
-      <span class="ver">V1.1 · June 30 2026</span>
+      <span class="ver">V1.2 · 7-30-2026</span>
     </p>
-    <h1>The "Should I trust&hellip;?" era.</h1>
-    <p class="subtitle">TL;DR: You should NOT. Unless&hellip;</p>
+    <h1>How do I know what to believe?</h1>
+    <p class="subtitle">TL;DR: You should NOT trust by default. Unless&hellip;</p>
 
     <div class="qbox">
-      <p>How to tell what's true and factual, versus what is asserted, dogmatic, or just slop?</p>
+      <p>How do you tell what's actually true from what's just confidently claimed, preached, or plain made up?</p>
       <p>Should I trust my research conclusions, my findings, Gino's report, Laly's article, or the hot take by the latest Lenny's guest?</p>
     </div>
 
-    <h1 class="brandtitle">THE SWAN ATTACK<span>Adversarial Auditor</span></h1>
+    <h1 class="brandtitle">THE SWAN ATTACK<span>A Ruthless Adversarial Auditor</span><span class="note">— Only use if you want the truth</span></h1>
 
     <div class="qa">
       <h4>The Swan Attack is designed for that very need</h4>
-      <p>The unforgiving assumption Rieper. An adversarial auditor: what it checks, how, and the science under it.</p>
+      <p>The unforgiving assumption Reaper. An adversarial auditor: what it checks, how, and the science under it.</p>
     </div>
 
     <div class="qa accent">
@@ -436,8 +448,16 @@
     <p class="cta-cap">Follow me on Substack — free.</p>
   </div>
 
+  <section>
+    <h2><span class="kicker">Keep going</span>The &ldquo;Should I Trust&hellip;?&rdquo; series</h2>
+    <div class="glance">
+      <div class="item"><b>Episode #03</b> — <span><a href="falsification-vs-validation.html" style="color:rgb(var(--primary));font-weight:600;text-decoration:none">You cannot validate anything</a>: why you can only break a claim, never confirm it — and where &ldquo;validate&rdquo; still belongs.</span></div>
+    </div>
+  </section>
+
   <footer>
-    Style: <strong>Steve — Cyan &amp; Orange</strong> (Playfair Display + Inter). &nbsp;·&nbsp; <a class="home" href="./index.html">← Switch style</a>
+    <p class="social">Share this article: <a id="sh-x" href="#" target="_blank" rel="noopener">X</a> &middot; <a id="sh-li" href="#" target="_blank" rel="noopener">LinkedIn</a></p>
+    <p class="copyright">&copy; 2026 Donato Marco Mangialardo. All rights reserved. No reproduction without permission.</p>
   </footer>
 
 </div>
@@ -451,6 +471,10 @@
   let saved;try{saved=localStorage.getItem('swan-theme')}catch(e){}
   apply(saved?saved==='dark':true); // dark is the default face of Steve
   tg.onclick=()=>apply(!document.documentElement.classList.contains('dark'));
+  // share links (X, LinkedIn) built from the live URL — domain-independent
+  (function(){var u=encodeURIComponent(location.href),t=encodeURIComponent(document.title);
+    var x=document.getElementById('sh-x');if(x)x.href='https://twitter.com/intent/tweet?url='+u+'&text='+t;
+    var l=document.getElementById('sh-li');if(l)l.href='https://www.linkedin.com/sharing/share-offsite/?url='+u;})();
 </script>
 </body>
 </html>
