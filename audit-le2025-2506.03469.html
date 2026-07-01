@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adversarial Audit — Le et al. 2025 (arXiv:2506.03469)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@200;300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #14161a;
+    --paper-raised: #1c1f24;
+    --ink: #eaeaea;
+    --ink-soft: #b4b9c0;
+    --hair: #34383f;
+    --refuted: #ff6b6b;
+    --standing: #3ddc97;
+    --reasoning: #f0b429;
+    --refuted-wash: #2a1414;
+    --standing-wash: #102a22;
+    --reasoning-wash: #2a2010;
+    --cyan: #50D0FF;
+    --accent: #ff672a;
+    --maxw: 760px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  header {
+    padding: 64px 0 32px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,103,42,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 9px; height: 9px;
+    flex: 0 0 auto;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+
+  .meta {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    margin: 0 0 48px;
+    line-height: 1.8;
+  }
+
+  .claim-block {
+    border-top: 1px solid var(--hair);
+    padding: 40px 0 32px;
+  }
+
+  .claim-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+
+  .claim-statement {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.36;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin: 0 0 20px;
+  }
+  .verdict.fail {
+    background: var(--refuted-wash);
+    color: var(--refuted);
+    border: 1px solid var(--refuted);
+  }
+  .verdict.weak {
+    background: var(--reasoning-wash);
+    color: var(--reasoning);
+    border: 1px solid var(--reasoning);
+  }
+  .verdict::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: 0 0 auto;
+  }
+
+  .claim-block h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--cyan);
+    margin: 20px 0 14px;
+  }
+
+  .claim-block p {
+    margin: 0 0 16px;
+  }
+
+  .claim-block ol {
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+  .claim-block li {
+    margin: 0 0 10px;
+    padding-left: 4px;
+  }
+
+  .claim-block em {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .structural {
+    border-top: 1px solid var(--hair);
+    padding: 40px 0 32px;
+  }
+  .structural .s-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+  .structural h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--cyan);
+    margin: 0 0 14px;
+  }
+  .structural p { margin: 0 0 16px; }
+
+  .summary {
+    margin: 48px 0 0;
+    padding: 30px 28px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+  }
+  .summary .lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .summary p {
+    margin: 0 0 14px;
+    font-size: 17px;
+    line-height: 1.58;
+  }
+  .summary p:last-child { margin-bottom: 0; }
+
+  .audit-footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hair);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: #FFD60A;
+    line-height: 1.8;
+  }
+  .af-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(255,214,10,0.45);
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .af-li {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 3px;
+    color: var(--ink);
+    vertical-align: middle;
+    transition: opacity .2s;
+  }
+  .af-li:hover { opacity: 0.7; }
+  .af-copy {
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.55;
+  }
+
+  .abstract-block {
+    margin: 0 0 32px;
+    padding: 24px 26px;
+    background: var(--paper-raised);
+    border-left: 3px solid var(--hair);
+  }
+  .abstract-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .abstract-text {
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.74;
+    color: var(--ink-soft);
+  }
+  .hl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 14px 0 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+  .hl-legend span { display: flex; align-items: center; gap: 6px; }
+  .hl {
+    background: rgba(80,208,255,0.12);
+    color: var(--ink);
+    border-bottom: 1px solid rgba(80,208,255,0.40);
+    padding: 0 2px;
+  }
+  .hl-warn {
+    background: rgba(255,103,42,0.10);
+    color: var(--ink);
+    border-bottom: 1px solid rgba(255,103,42,0.40);
+    padding: 0 2px;
+  }
+  .claims-derived {
+    margin: 0 0 48px;
+    padding: 22px 24px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+  }
+  .cd-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .claims-derived ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .claims-derived li {
+    margin: 0 0 10px;
+    font-size: 15.5px;
+  }
+  .claims-derived li:last-child { margin-bottom: 0; }
+
+  .tldr {
+    margin: 0 0 48px;
+    padding: 22px 24px;
+    background: rgba(80,208,255,0.06);
+    border-left: 3px solid var(--cyan);
+  }
+  .tldr .tl-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin: 0 0 10px;
+  }
+  .tldr p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .tldr code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.91em;
+    color: var(--ink-soft);
+    background: rgba(80,208,255,0.10);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  .audit-callout {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 2px;
+    color: #F5E98A;
+    line-height: 2;
+  }
+  .audit-callout strong,
+  .audit-callout em,
+  .audit-callout a { color: inherit !important; }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Adversarial Audit &middot; Swan Attack</div>
+    <h1>Verification-Guided Falsification for Safe RL via Explainable Abstraction and Risk-Aware Exploration</h1>
+    <div class="meta">
+      Source: <a href="https://arxiv.org/abs/2506.03469" target="_blank" rel="noopener">arXiv:2506.03469</a> &middot; Tuan Le, Risal Shefin, Debashis Gupta, Thai Le, Sarra Alqahtani &middot; June 2025<br>
+      Source: abstract verbatim, emergentmind.com/papers/2506.03469
+      <div class="audit-callout">
+        <strong>AUDIT METHOD:</strong><br>
+        <strong>Swan Attack V21.0 adversarial audit</strong> &mdash; Directed to claim analysis &amp; falsification<br>
+        <strong>LLM:</strong> Claude Code (claude-sonnet-4-6 1M) on VSCode<br>
+        <strong>Human Supreme Commander and Chief Skeptical:</strong> <em>Donato Marco Mangialardo</em> <a class="af-li" href="https://linkedin.com/in/donatomm" target="_blank" rel="noopener" aria-label="LinkedIn @donatomm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a> <em>@donatomm</em><br>
+        <em>Date: July 1, 2026</em>
+      </div>
+    </div>
+  </header>
+
+  <!-- Abstract -->
+  <div class="abstract-block">
+    <div class="abstract-lbl">Abstract &mdash; verbatim</div>
+    <p class="abstract-text"><span class="hl">Ensuring the safety of reinforcement learning (RL) policies in high-stakes environments</span> requires not only formal verification but also interpretability and targeted falsification. While <span class="hl">model checking provides formal guarantees</span>, its effectiveness is limited by abstraction quality and the completeness of the underlying trajectory dataset. We propose a hybrid framework that integrates (1) explainability, (2) model checking, and (3) risk-guided falsification to achieve both rigor and coverage. Our approach begins by constructing a human-interpretable abstraction of the RL policy using Comprehensible Abstract Policy Summarization (CAPS). This abstract graph, derived from offline trajectories, is both verifier-friendly, semantically meaningful, and can be used as input to Storm probabilistic model checker to verify satisfaction of temporal safety specifications. If the model checker identifies a violation, it will return an interpretable counterexample trace by which the policy fails the safety requirement. However, <span class="hl-warn">if no violation is detected, we cannot conclude satisfaction due to potential limitation in the abstraction and coverage of the offline dataset</span>. In such cases, we estimate associated risk during model checking to guide a falsification strategy that prioritizes searching in high-risk states and regions underrepresented in the trajectory dataset. <span class="hl">We further provide PAC-style guarantees on the likelihood of uncovering undetected violations</span>. Finally, <span class="hl">we incorporate a lightweight safety shield that switches to a fallback policy at runtime</span> when such a risk exceeds a threshold, facilitating failure mitigation without retraining.</p>
+    <div class="hl-legend">
+      <span><span class="hl">cyan underline</span> &mdash; claim extracted for audit</span>
+      <span><span class="hl-warn">orange underline</span> &mdash; internal contradiction or self-refutation</span>
+    </div>
+  </div>
+
+  <!-- Claims derived -->
+  <div class="claims-derived">
+    <div class="cd-lbl">Claims under audit &mdash; derived from abstract</div>
+    <ol>
+      <li>The framework provides formal safety guarantees for RL in high-stakes environments.</li>
+      <li>PAC-style guarantees cover the likelihood of finding undetected violations.</li>
+      <li>This is a framework for safe RL (the fallback shield makes the system safe at runtime).</li>
+    </ol>
+  </div>
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <div class="tl-lbl">TL;DR</div>
+    <p><code>if no violation is detected, we cannot conclude satisfaction</code> is the sharpest find &mdash; the authors concede the core limitation of Claim 1 in the same paragraph that makes it.</p>
+  </div>
+
+  <!-- Claim 1 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 1 of 3</div>
+    <div class="claim-statement">&ldquo;The framework provides formal safety guarantees for RL in high-stakes environments.&rdquo;</div>
+    <div class="verdict fail">Guarantee covers the abstraction, not the policy</div>
+    <h3>Formal verification of an incomplete model is not formal verification of the system</h3>
+    <p>The authors say outright: &ldquo;if no violation is detected, we cannot conclude satisfaction due to potential limitation in the abstraction and coverage of the offline dataset.&rdquo;</p>
+    <p>The Storm model checker verifies the CAPS abstract graph &mdash; a discrete summary built from offline trajectories. Not the continuous RL policy operating in the real environment. A clean result from the model checker means &ldquo;the abstraction is safe,&rdquo; which says nothing about real policy behavior in states the trajectories didn&rsquo;t cover.</p>
+    <p>All the &ldquo;formal rigor&rdquo; language in the framing is downstream of an abstraction the authors themselves admit may be incomplete. The word <em>formal</em> is doing misleading work.</p>
+  </div>
+
+  <!-- Claim 2 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 2 of 3</div>
+    <div class="claim-statement">&ldquo;PAC-style guarantees cover the likelihood of finding undetected violations.&rdquo;</div>
+    <div class="verdict fail">Bounds break in their own featured use case</div>
+    <h3>The math holds; the assumptions don&rsquo;t</h3>
+    <p>PAC guarantees require approximately i.i.d. sampling with known error bounds. The medical domain they feature &mdash; insulin dosing, continuous glucose monitoring &mdash; is explicitly flagged in the paper as having &ldquo;delayed safety effects&rdquo; that make &ldquo;reliable abstractions&rdquo; impossible.</p>
+    <p>You cannot compute meaningful PAC bounds on violation coverage when the feedback signal is delayed and the abstraction is unreliable. The math is internally consistent; it just doesn&rsquo;t apply to the problem the paper positions as its primary motivation.</p>
+  </div>
+
+  <!-- Claim 3 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 3 of 3</div>
+    <div class="claim-statement">&ldquo;This is a framework for safe RL.&rdquo;</div>
+    <div class="verdict fail">Violation detector with an unverified backup plan</div>
+    <h3>The fallback policy is never itself verified</h3>
+    <p>The runtime shield &ldquo;switches to a fallback policy when risk exceeds a threshold.&rdquo; Two problems:</p>
+    <ol>
+      <li>The fallback policy is not verified by this framework. Its safety is assumed, not shown.</li>
+      <li>The underlying policy is never fixed &mdash; only bypassed at runtime.</li>
+    </ol>
+    <p>The framework finds some violations and hands off to an unverified fallback. That is a failure detector with an ejector seat, not a safety guarantor. The title says &ldquo;safe RL.&rdquo; What it delivers is &ldquo;RL with a trip wire.&rdquo;</p>
+  </div>
+
+  <!-- Structural -->
+  <div class="structural">
+    <div class="s-label">Structural problem</div>
+    <h3>The falsification loop is circular</h3>
+    <p>The risk-guided falsification strategy &ldquo;prioritizes searching in high-risk states and regions underrepresented in the trajectory dataset.&rdquo; But risk estimates are derived from the same incomplete offline dataset that caused the coverage gap in the first place.</p>
+    <p>The search finds gaps the risk model already suspected. It cannot find the gaps the risk model didn&rsquo;t know to look for &mdash; which is precisely the class of dangerous failures that matter most in high-stakes RL.</p>
+  </div>
+
+  <div class="structural">
+    <div class="s-label">Naming problem</div>
+    <h3>&ldquo;Verification-guided&rdquo; is doing a different job than the name implies</h3>
+    <p>&ldquo;Verification-Guided Falsification&rdquo; implies the two operations work in tandem. In practice: verification runs first, produces risk estimates when no violations are found, and those estimates guide heuristic search. Verification is functioning as a coverage analyzer, not a verifier. The title names one operation; the method does something adjacent to it.</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="lbl">Summary</div>
+    <p>The formal guarantee covers an abstraction the authors admit is incomplete. The PAC bounds depend on distributional assumptions that break in the paper&rsquo;s featured use case. The fallback policy that &ldquo;ensures safety&rdquo; is never itself verified. The system doesn&rsquo;t make an unsafe policy safe &mdash; it detects some of its failures, then delegates to something else.</p>
+  </div>
+
+  <div class="audit-footer">
+    <div class="af-copy">&copy; 2026 Donato Marco Mangialardo &mdash; All rights reserved.</div>
+  </div>
+
+</div>
+</body>
+</html>

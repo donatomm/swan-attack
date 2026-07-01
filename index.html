@@ -227,6 +227,52 @@
     padding:14px 34px;border-radius:var(--radius);text-decoration:none;transition:.2s}
   .btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
   .cta-cap{font-size:14px;color:rgb(var(--muted-foreground));margin-top:16px}
+
+  /* Real audits callout */
+  .real-audits-callout{
+    margin:48px 0;padding:32px 30px;
+    background:rgb(var(--card));
+    border:1px solid rgb(var(--accent));
+    border-radius:var(--radius);
+  }
+  .ra-headline{
+    font-family:'Inter',sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.13em;text-transform:uppercase;
+    color:rgb(var(--accent));margin-bottom:24px;
+  }
+  .ra-source{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgb(var(--border));}
+  .ra-source:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+  .ra-source-title{
+    font-size:16px;font-weight:600;color:rgb(var(--foreground));
+    margin-bottom:12px;line-height:1.45;
+  }
+  .ra-source-title a{color:rgb(var(--primary));text-decoration:none;font-weight:600;}
+  .ra-source-title a:hover{text-decoration:underline;}
+  .ra-source-title .ra-id{
+    font-family:'Inter',monospace;font-weight:400;
+    font-size:13px;color:rgb(var(--muted-foreground));margin-left:8px;
+  }
+  .btn-audit{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;color:rgb(var(--accent));
+    border:1.5px solid rgb(var(--accent));
+    font-family:'Inter',sans-serif;font-weight:700;font-size:14px;
+    letter-spacing:.03em;padding:9px 20px;border-radius:var(--radius);
+    text-decoration:none;transition:.2s;
+  }
+  .btn-audit:hover{background:rgba(var(--accent),.08);transform:translateY(-1px);}
+
+  /* Top CTA anchor link */
+  .cta-real-audits{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Inter',sans-serif;font-weight:700;font-size:13px;
+    letter-spacing:.1em;text-transform:uppercase;
+    color:rgb(var(--accent));text-decoration:none;
+    border-bottom:1.5px solid rgba(var(--accent),.4);
+    padding-bottom:2px;margin-bottom:28px;
+    transition:border-color .2s;
+  }
+  .cta-real-audits:hover{border-color:rgb(var(--accent));}
 </style>
 </head>
 <body>
@@ -268,6 +314,7 @@
     <p class="lede muted">The job is to separate two things that usually arrive looking identical: a claim backed by real, disclosed evidence, and a baseless assertion or a plain guess wearing the same confident tone. Once you can tell them apart, you know what to trust and what to set aside.</p>
 
     <div class="qa">
+      <a class="cta-real-audits" href="#real-audits">See real audit results for real scientific papers &darr;</a>
       <h4>Hidden, often undetectable false truths</h4>
       <p>Your research conclusions are well grounded. Sources are scored, and most of the ones used are A++, with plenty of citations. You are scanning the corpus (never skip the human in the loop, ever), and one finding looks very interesting and slightly off. So you go for the exact sources behind it. Very strong ones. You don't concede, and you read the whole papers end to end. The statement does not fit: it uses the two sources' findings, but tilts them to support a baseless take, a fabricated one. That is very hard to detect. Swan Attack catches it, piece of cake.</p>
     </div>
@@ -454,6 +501,24 @@
       <div class="item"><b>Episode #03</b> — <span><a href="https://falsify-no-validate.vercel.app/" target="_blank" rel="noopener" style="color:rgb(var(--primary));font-weight:600;text-decoration:none">You cannot validate anything</a>: why you can only break a claim, never confirm it — and where &ldquo;validate&rdquo; still belongs.</span></div>
     </div>
   </section>
+
+  <div class="real-audits-callout" id="real-audits">
+    <div class="ra-headline">Check real audit reports of real scientific papers</div>
+    <div class="ra-source">
+      <div class="ra-source-title">
+        <a href="https://arxiv.org/abs/2411.11910" target="_blank" rel="noopener">AIGS: Generating Science from AI-Powered Automated Falsification</a>
+        <span class="ra-id">arXiv:2411.11910 &middot; Liu et al. 2024</span>
+      </div>
+      <a class="btn-audit" href="/audit-aigs-2411.11910">See Swan Attack Audit report &rarr;</a>
+    </div>
+    <div class="ra-source">
+      <div class="ra-source-title">
+        <a href="https://arxiv.org/abs/2506.03469" target="_blank" rel="noopener">Verification-Guided Falsification for Safe RL via Explainable Abstraction and Risk-Aware Exploration</a>
+        <span class="ra-id">arXiv:2506.03469 &middot; Le et al. 2025</span>
+      </div>
+      <a class="btn-audit" href="/audit-le2025-2506.03469">See Swan Attack Audit report &rarr;</a>
+    </div>
+  </div>
 
   <footer>
     <p class="social">Share this article: <a id="sh-x" href="#" target="_blank" rel="noopener">X</a> &middot; <a id="sh-li" href="#" target="_blank" rel="noopener">LinkedIn</a></p>

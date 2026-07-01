@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adversarial Audit — AIGS (arXiv:2411.11910)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@200;300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #14161a;
+    --paper-raised: #1c1f24;
+    --ink: #eaeaea;
+    --ink-soft: #b4b9c0;
+    --hair: #34383f;
+    --refuted: #ff6b6b;
+    --standing: #3ddc97;
+    --reasoning: #f0b429;
+    --refuted-wash: #2a1414;
+    --standing-wash: #102a22;
+    --reasoning-wash: #2a2010;
+    --cyan: #50D0FF;
+    --accent: #ff672a;
+    --maxw: 760px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  header {
+    padding: 64px 0 32px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,103,42,0.12);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 22px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 9px; height: 9px;
+    flex: 0 0 auto;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+
+  .meta {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    margin: 0 0 48px;
+    line-height: 1.8;
+  }
+
+  .claim-block {
+    border-top: 1px solid var(--hair);
+    padding: 40px 0 32px;
+  }
+
+  .claim-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+
+  .claim-statement {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.36;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin: 0 0 20px;
+  }
+  .verdict.fail {
+    background: var(--refuted-wash);
+    color: var(--refuted);
+    border: 1px solid var(--refuted);
+  }
+  .verdict.weak {
+    background: var(--reasoning-wash);
+    color: var(--reasoning);
+    border: 1px solid var(--reasoning);
+  }
+  .verdict::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: 0 0 auto;
+  }
+
+  .claim-block h3 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--cyan);
+    margin: 20px 0 14px;
+  }
+
+  .claim-block p {
+    margin: 0 0 16px;
+  }
+
+  .claim-block em {
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+
+  .summary {
+    margin: 48px 0 0;
+    padding: 30px 28px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+  }
+  .summary .lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .summary p {
+    margin: 0 0 14px;
+    font-size: 17px;
+    line-height: 1.58;
+  }
+  .summary p:last-child { margin-bottom: 0; }
+
+  .audit-footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hair);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: #FFD60A;
+    line-height: 1.8;
+  }
+  .af-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid rgba(255,214,10,0.45);
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .af-li {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 3px;
+    color: var(--ink);
+    vertical-align: middle;
+    transition: opacity .2s;
+  }
+  .af-li:hover { opacity: 0.7; }
+  .af-copy {
+    margin-top: 10px;
+    font-size: 11px;
+    opacity: 0.55;
+  }
+
+  .abstract-block {
+    margin: 0 0 32px;
+    padding: 24px 26px;
+    background: var(--paper-raised);
+    border-left: 3px solid var(--hair);
+  }
+  .abstract-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .abstract-text {
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.74;
+    color: var(--ink-soft);
+  }
+  .hl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 14px 0 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+  .hl-legend span { display: flex; align-items: center; gap: 6px; }
+  .hl {
+    background: rgba(80,208,255,0.12);
+    color: var(--ink);
+    border-bottom: 1px solid rgba(80,208,255,0.40);
+    padding: 0 2px;
+  }
+  .hl-warn {
+    background: rgba(255,103,42,0.10);
+    color: var(--ink);
+    border-bottom: 1px solid rgba(255,103,42,0.40);
+    padding: 0 2px;
+  }
+  .claims-derived {
+    margin: 0 0 48px;
+    padding: 22px 24px;
+    background: var(--paper-raised);
+    border: 1px solid var(--hair);
+    border-radius: 2px;
+  }
+  .cd-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .claims-derived ol {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .claims-derived li {
+    margin: 0 0 10px;
+    font-size: 15.5px;
+  }
+  .claims-derived li:last-child { margin-bottom: 0; }
+
+  .tldr {
+    margin: 0 0 48px;
+    padding: 22px 24px;
+    background: rgba(80,208,255,0.06);
+    border-left: 3px solid var(--cyan);
+  }
+  .tldr .tl-lbl {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin: 0 0 10px;
+  }
+  .tldr p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .tldr code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.91em;
+    color: var(--ink-soft);
+    background: rgba(80,208,255,0.10);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  .audit-callout {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 2px;
+    color: #F5E98A;
+    line-height: 2;
+  }
+  .audit-callout strong,
+  .audit-callout em,
+  .audit-callout a { color: inherit !important; }
+
+  a { color: var(--cyan); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Adversarial Audit &middot; Swan Attack</div>
+    <h1>AIGS: Generating Science from AI-Powered Automated Falsification</h1>
+    <div class="meta">
+      Source: <a href="https://arxiv.org/abs/2411.11910" target="_blank" rel="noopener">arXiv:2411.11910</a> &middot; Zijun Liu, Kaiming Liu, Yiqi Zhu, Xuanyu Lei, Zonghan Yang, Zhenhe Zhang, Peng Li, Yang Liu &middot; November 2024<br>
+      Source: abstract verbatim, emergentmind.com/papers/2411.11910
+      <div class="audit-callout">
+        <strong>AUDIT METHOD:</strong><br>
+        <strong>Swan Attack V21.0 adversarial audit</strong> &mdash; Directed to claim analysis &amp; falsification<br>
+        <strong>LLM:</strong> Claude Code (claude-sonnet-4-6 1M) on VSCode<br>
+        <strong>Human Supreme Commander and Chief Skeptical:</strong> <em>Donato Marco Mangialardo</em> <a class="af-li" href="https://linkedin.com/in/donatomm" target="_blank" rel="noopener" aria-label="LinkedIn @donatomm"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a> <em>@donatomm</em><br>
+        <em>Date: July 1, 2026</em>
+      </div>
+    </div>
+  </header>
+
+  <!-- Abstract -->
+  <div class="abstract-block">
+    <div class="abstract-lbl">Abstract &mdash; verbatim</div>
+    <p class="abstract-text">Rapid development of artificial intelligence has drastically accelerated the development of scientific discovery. Trained with large-scale observation data, deep neural networks extract the underlying patterns in an end-to-end manner and assist human researchers with highly-precised predictions in unseen scenarios. The recent rise of Large Language Models (LLMs) and the empowered autonomous agents enable scientists to gain help through interaction in different stages of their research, including but not limited to literature review, research ideation, idea implementation, and academic writing. However, AI researchers instantiated by foundation model empowered agents with full-process autonomy are still in their infancy. In this paper, we study AI-Generated Science (AIGS), where agents independently and autonomously complete the entire research process and discover scientific laws. By revisiting the definition of scientific research, <span class="hl">we argue that falsification is the essence of both human research process and the design of an AIGS system</span>. Through the lens of falsification, prior systems attempting towards AI-Generated Science either lack the part in their design, or rely heavily on existing verification engines that narrow the use in specialized domains. In this work, we propose Baby-AIGS as a baby-step demonstration of a full-process AIGS system, which is a multi-agent system with agents in roles representing key research process. By introducing <span class="hl-warn">FalsificationAgent, which identify and then verify possible scientific discoveries</span>, we empower the system with explicit falsification. <span class="hl">Experiments on three tasks preliminarily show that Baby-AIGS could produce meaningful scientific discoveries</span>, <span class="hl-warn">though not on par with experienced human researchers</span>. Finally, we discuss on the limitations of current Baby-AIGS, actionable insights, and related ethical issues in detail.</p>
+    <div class="hl-legend">
+      <span><span class="hl">cyan underline</span> &mdash; claim extracted for audit</span>
+      <span><span class="hl-warn">orange underline</span> &mdash; internal contradiction or self-refutation</span>
+    </div>
+  </div>
+
+  <!-- Claims derived -->
+  <div class="claims-derived">
+    <div class="cd-lbl">Claims under audit &mdash; derived from abstract</div>
+    <ol>
+      <li>Falsification is the essence of scientific research, and Baby-AIGS implements it.</li>
+      <li>Baby-AIGS produces meaningful scientific discoveries.</li>
+      <li>Baby-AIGS outperforms initial baselines (implied; body admits it falls short of human researchers).</li>
+    </ol>
+  </div>
+
+  <!-- TL;DR -->
+  <div class="tldr">
+    <div class="tl-lbl">TL;DR</div>
+    <p><code>identify and then verify</code> is the sharpest find in this abstract &mdash; the paper&rsquo;s own word choice disproves its own thesis without any outside argument needed.</p>
+  </div>
+
+  <!-- Claim 1 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 1 of 3</div>
+    <div class="claim-statement">&ldquo;Falsification is the essence of scientific research, and Baby-AIGS implements it.&rdquo;</div>
+    <div class="verdict fail">Self-contradiction</div>
+    <h3>The implementation validates, not falsifies</h3>
+    <p>Their abstract states the FalsificationAgent &ldquo;identifies and then <em>verifies</em> possible scientific discoveries.&rdquo; Their methodology confirms it: the agent &ldquo;systematically <em>validates</em> hypotheses through structured experiments&rdquo; and &ldquo;extracts insights through empirical verification.&rdquo;</p>
+    <p>That is confirmation-seeking &mdash; exactly what Popper argued against. Real falsification means designing the test most likely to <em>break</em> the hypothesis, not running experiments to confirm it. The paper invokes Popper by name, then builds the opposite mechanism.</p>
+    <p>The paper&rsquo;s thesis and its implementation directly contradict each other. This is not a minor slippage in terminology &mdash; the entire system design follows from a mislabeling of the core concept.</p>
+  </div>
+
+  <!-- Claim 2 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 2 of 3</div>
+    <div class="claim-statement">&ldquo;Baby-AIGS produces meaningful scientific discoveries.&rdquo;</div>
+    <div class="verdict fail">Untestable as stated</div>
+    <h3>The test domains make &ldquo;science&rdquo; mean &ldquo;benchmark score&rdquo;</h3>
+    <p>The three experimental tasks: data engineering, self-instruct alignment, language modeling. All AI benchmark domains &mdash; closed, metric-driven, with success defined by benchmark scores.</p>
+    <p>Improving a benchmark score is ML engineering, not scientific discovery. Open scientific domains (biology, chemistry, physics) have no pre-defined success metric and no automated oracle to evaluate results. The paper tests only on the domains most compatible with its method and calls the result &ldquo;generating science.&rdquo;</p>
+    <p>Additionally, output quality is evaluated by a ReviewAgent &mdash; another AI within the same system. That is not peer review. No independent human expert verified the &ldquo;discoveries.&rdquo;</p>
+  </div>
+
+  <!-- Claim 3 -->
+  <div class="claim-block">
+    <div class="claim-label">Claim 3 of 3</div>
+    <div class="claim-statement">&ldquo;Baby-AIGS outperforms initial baselines.&rdquo;</div>
+    <div class="verdict weak">Weak baseline</div>
+    <h3>Executability is not discovery; the relevant baseline is humans</h3>
+    <p>&ldquo;Initial baselines&rdquo; appear to be naive or earlier AI approaches. The relevant comparison is human researchers. The authors themselves acknowledge Baby-AIGS &ldquo;falls short of experienced human researchers.&rdquo; The central performance claim is falsified by the paper&rsquo;s own results section.</p>
+    <p>The headline metric &mdash; &ldquo;near-perfect experiment executability&rdquo; &mdash; measures whether code runs, not whether it produces valid science. A system that executes trivial experiments flawlessly does not generate knowledge.</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="lbl">Summary</div>
+    <p>The paper calls its system a falsifier but builds a validator. It tests on closed AI benchmarks where &ldquo;science&rdquo; means &ldquo;benchmark score.&rdquo; It celebrates beating baselines it designed itself. And it explicitly admits the system doesn&rsquo;t match actual researchers.</p>
+    <p>The paper is a live example of the confusion it claims to resolve: the word <em>falsification</em> placed in front of the wrong noun.</p>
+  </div>
+
+  <div class="audit-footer">
+    <div class="af-copy">&copy; 2026 Donato Marco Mangialardo &mdash; All rights reserved.</div>
+  </div>
+
+</div>
+</body>
+</html>
